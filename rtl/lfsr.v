@@ -300,7 +300,7 @@ if (STYLE_INT == "REDUCTION") begin
     // slightly smaller than generated code with Quartus
     // --> better for simulation
 
-    for (n = 0; n < OUTPUT_WIDTH; n = n + 1) begin
+    for (n = 0; n < OUTPUT_WIDTH; n = n + 1) begin : loop
         assign lfsr_out[n] = ^{(lfsr_in & lfsr_mask_state[n]), (data_in & lfsr_mask_data[n])};
     end
 
