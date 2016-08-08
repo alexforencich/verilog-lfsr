@@ -120,7 +120,7 @@ Fibonacci style (example for 64b66b scrambler, 0x8000000001)
     ,-----------------------------(+)<------------------------------,
     |                              ^                                |
     |  .----.  .----.       .----. |  .----.       .----.  .----.   |
-    `->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |->(+)<-DIN (MSB first)
+    `->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |->(+)<-DIN (LSB first)
        '----'  '----'       '----'    '----'       '----'  '----'
 
 Galois style (example for CRC16, 0x8005)
@@ -133,7 +133,7 @@ Galois style (example for CRC16, 0x8005)
 
 REVERSE
 
-Bit-reverse LFSR input and output.
+Bit-reverse LFSR input and output.  Shifts MSB first by default, set REVERSE for LSB first.
 
 INVERT
 
@@ -177,8 +177,8 @@ PRBS17      Fibonacci               17      17'h04001       any
 PRBS20      Fibonacci               20      20'h00009       any             ITU V.57
 PRBS23      Fibonacci               23      23'h040001      any             ITU O.151
 PRBS31      Fibonacci               31      31'h10000001    any
-64b66b      Fibonacci               58      58'h8000000001  any             10G Ethernet
-128b130b    Fibonacci               23      23'h210125      any             PCIe gen 3
+64b66b      Fibonacci, bit-reverse  58      58'h8000000001  any             10G Ethernet
+128b130b    Galois, bit-reverse     23      23'h210125      any             PCIe gen 3
 
 */
 
