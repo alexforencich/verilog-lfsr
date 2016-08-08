@@ -20,15 +20,25 @@ unrolled LFSR next state computation.
 
 Wrapper for lfsr module for standard CRC computation.
 
+### lfsr_descramble module
+
+Wrapper for lfsr module for self-synchronizing descrambler.
+
 ### lfsr_prbs module
 
 Wrapper for lfsr module for standard PRBS computation.
 
+### lfsr_scramble module
+
+Wrapper for lfsr module for self-synchronizing scrambler.
+
 ### Source Files
 
-    lfsr.v       : Parametrizable combinatorial LFSR/CRC module
-    lfsr_crc.v   : Parametrizable CRC computation wrapper
-    lfsr_prbs.v  : Parametrizable PRBS computation wrapper
+    lfsr.v             : Parametrizable combinatorial LFSR/CRC module
+    lfsr_crc.v         : Parametrizable CRC computation wrapper
+    lfsr_descramble.v  : Parametrizable LFSR self-synchronizing descrambler
+    lfsr_prbs.v        : Parametrizable PRBS computation wrapper
+    lfsr_scramble.v    : Parametrizable LFSR self-synchronizing scrambler
 
 ## Testing
 
