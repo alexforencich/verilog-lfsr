@@ -247,19 +247,19 @@ initial begin
     // reverse bits if selected
     if (REVERSE) begin
         // reverse order
-        for (i = 0; i < OUTPUT_WIDTH/2; i = i + 1) begin
+        for (i = 0; i < STATE_WIDTH/2; i = i + 1) begin
             state_val = lfsr_mask_state[i];
             data_val = lfsr_mask_data[i];
-            lfsr_mask_state[i] = lfsr_mask_state[OUTPUT_WIDTH-i-1];
-            lfsr_mask_data[i] = lfsr_mask_data[OUTPUT_WIDTH-i-1];
-            lfsr_mask_state[OUTPUT_WIDTH-i-1] = state_val;
-            lfsr_mask_data[OUTPUT_WIDTH-i-1] = data_val;
+            lfsr_mask_state[i] = lfsr_mask_state[STATE_WIDTH-i-1];
+            lfsr_mask_data[i] = lfsr_mask_data[STATE_WIDTH-i-1];
+            lfsr_mask_state[STATE_WIDTH-i-1] = state_val;
+            lfsr_mask_data[STATE_WIDTH-i-1] = data_val;
         end
         // reverse bits
-        for (i = 0; i < OUTPUT_WIDTH; i = i + 1) begin
+        for (i = 0; i < STATE_WIDTH; i = i + 1) begin
             state_val = 0;
-            for (j = 0; j < STATE_WIDTH; j = j + 1) begin
-                state_val[j] = lfsr_mask_state[i][STATE_WIDTH-j-1];
+            for (j = 0; j < LFSR_WIDTH; j = j + 1) begin
+                state_val[j] = lfsr_mask_state[i][LFSR_WIDTH-j-1];
             end
             lfsr_mask_state[i] = state_val;
 
