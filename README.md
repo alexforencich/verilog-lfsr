@@ -24,6 +24,10 @@ Wrapper for lfsr module for standard CRC computation.
 
 Wrapper for lfsr module for self-synchronizing descrambler.
 
+### lfsr_prbs_check module
+
+Wrapper for lfsr module for standard PRBS check.
+
 ### lfsr_prbs_gen module
 
 Wrapper for lfsr module for standard PRBS computation.
@@ -37,6 +41,7 @@ Wrapper for lfsr module for self-synchronizing scrambler.
     lfsr.v             : Parametrizable combinatorial LFSR/CRC module
     lfsr_crc.v         : Parametrizable CRC computation wrapper
     lfsr_descramble.v  : Parametrizable LFSR self-synchronizing descrambler
+    lfsr_prbs_check.v  : Parametrizable PRBS checker wrapper
     lfsr_prbs_gen.v    : Parametrizable PRBS generator wrapper
     lfsr_scramble.v    : Parametrizable LFSR self-synchronizing scrambler
 
