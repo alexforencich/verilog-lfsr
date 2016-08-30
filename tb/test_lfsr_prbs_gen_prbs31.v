@@ -37,6 +37,7 @@ parameter LFSR_POLY = 31'h10000001;
 parameter LFSR_INIT = {LFSR_WIDTH{1'b1}};
 parameter LFSR_CONFIG = "FIBONACCI";
 parameter REVERSE = 0;
+parameter INVERT = 1;
 parameter OUTPUT_WIDTH = 8;
 parameter STYLE = "AUTO";
 
@@ -69,6 +70,7 @@ lfsr_prbs_gen #(
     .LFSR_INIT(LFSR_INIT),
     .LFSR_CONFIG(LFSR_CONFIG),
     .REVERSE(REVERSE),
+    .INVERT(INVERT),
     .OUTPUT_WIDTH(OUTPUT_WIDTH),
     .STYLE(STYLE)
 )

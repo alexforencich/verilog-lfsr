@@ -61,7 +61,7 @@ def prbs31(state = 0x7fffffff):
                 state = ((state & 0x3fffffff) << 1) | 1
             else:
                 state = (state & 0x3fffffff) << 1
-        yield state & 0xff
+        yield ~state & 0xff
 
 def bench():
 
@@ -71,6 +71,7 @@ def bench():
     LFSR_INIT = 0x7fffffff
     LFSR_CONFIG = "FIBONACCI"
     REVERSE = 0
+    INVERT = 1
     OUTPUT_WIDTH = 8
     STYLE = "AUTO"
 

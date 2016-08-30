@@ -71,6 +71,7 @@ def bench():
     LFSR_INIT = 0x1ff
     LFSR_CONFIG = "FIBONACCI"
     REVERSE = 0
+    INVERT = 0
     OUTPUT_WIDTH = 8
     STYLE = "AUTO"
 

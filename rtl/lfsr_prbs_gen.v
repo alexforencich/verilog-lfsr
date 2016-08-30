@@ -41,6 +41,8 @@ module lfsr_prbs_gen #
     parameter LFSR_CONFIG = "FIBONACCI",
     // bit-reverse input and output
     parameter REVERSE = 0,
+    // invert output
+    parameter INVERT = 1,
     // width of LFSR output
     parameter OUTPUT_WIDTH = 8,
     // implementation style: "AUTO", "LOOP", "REDUCTION"
@@ -126,6 +128,10 @@ REVERSE
 
 Bit-reverse LFSR output.  Shifts MSB first by default, set REVERSE for LSB first.
 
+INVERT
+
+Bitwise invert PRBS output.
+
 DATA_WIDTH
 
 Specify width of output data bus.
@@ -189,24 +195,29 @@ lfsr_inst (
 
 always @* begin
     if (REVERSE) begin
-        output_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
+        if (INVERT) begin
+            output_reg <= ~lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
+        end else begin
+            output_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
+        end
     end else begin
-        output_reg <= lfsr_out[OUTPUT_WIDTH-1:0];
+        if (INVERT) begin
+            output_reg <= ~lfsr_out[OUTPUT_WIDTH-1:0];
+        end else begin
+            output_reg <= lfsr_out[OUTPUT_WIDTH-1:0];
+        end
     end
 end
 
 always @(posedge clk) begin
     if (rst) begin
         state_reg <= LFSR_INIT;
-        output_reg <= 0;
     end else begin
         if (enable) begin
             if (REVERSE) begin
                 state_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-LFSR_WIDTH];
-                //output_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
             end else begin
                 state_reg <= lfsr_out[LFSR_WIDTH-1:0];
-                //output_reg <= lfsr_out[OUTPUT_WIDTH-1:0];
             end
         end
     end
