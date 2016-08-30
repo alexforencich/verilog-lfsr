@@ -27,17 +27,17 @@ THE SOFTWARE.
 `timescale 1ns / 1ps
 
 /*
- * Testbench for lfsr_prbs
+ * Testbench for lfsr_prbs_gen
  */
-module test_lfsr_prbs_prbs9;
+module test_lfsr_prbs_gen_prbs31_64;
 
 // Parameters
-parameter LFSR_WIDTH = 9;
-parameter LFSR_POLY = 9'h021;
+parameter LFSR_WIDTH = 31;
+parameter LFSR_POLY = 31'h10000001;
 parameter LFSR_INIT = {LFSR_WIDTH{1'b1}};
 parameter LFSR_CONFIG = "FIBONACCI";
 parameter REVERSE = 0;
-parameter OUTPUT_WIDTH = 8;
+parameter OUTPUT_WIDTH = 64;
 parameter STYLE = "AUTO";
 
 // Inputs
@@ -59,11 +59,11 @@ initial begin
     $to_myhdl(data_out);
 
     // dump file
-    $dumpfile("test_lfsr_prbs_prbs9.lxt");
-    $dumpvars(0, test_lfsr_prbs_prbs9);
+    $dumpfile("test_lfsr_prbs_gen_prbs31_64.lxt");
+    $dumpvars(0, test_lfsr_prbs_gen_prbs31_64);
 end
 
-lfsr_prbs #(
+lfsr_prbs_gen #(
     .LFSR_WIDTH(LFSR_WIDTH),
     .LFSR_POLY(LFSR_POLY),
     .LFSR_INIT(LFSR_INIT),

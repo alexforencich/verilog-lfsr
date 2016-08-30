@@ -26,8 +26,8 @@ THE SOFTWARE.
 from myhdl import *
 import os
 
-module = 'lfsr_prbs'
-testbench = 'test_%s_prbs31' % module
+module = 'lfsr_prbs_gen'
+testbench = 'test_%s_prbs9' % module
 
 srcs = []
 
@@ -39,11 +39,11 @@ src = ' '.join(srcs)
 
 build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
-def dut_lfsr_prbs(clk,
-                  rst,
-                  current_test,
-                  enable,
-                  data_out):
+def dut_lfsr_prbs_gen(clk,
+                      rst,
+                      current_test,
+                      enable,
+                      data_out):
 
     if os.system(build_cmd):
         raise Exception("Error running build command")
@@ -54,21 +54,21 @@ def dut_lfsr_prbs(clk,
                 enable=enable,
                 data_out=data_out)
 
-def prbs31(state = 0x7fffffff):
+def prbs9(state = 0x1ff):
     while True:
         for i in range(8):
-            if bool(state & 0x08000000) ^ bool(state & 0x40000000):
-                state = ((state & 0x3fffffff) << 1) | 1
+            if bool(state & 0x10) ^ bool(state & 0x100):
+                state = ((state & 0xff) << 1) | 1
             else:
-                state = (state & 0x3fffffff) << 1
+                state = (state & 0xff) << 1
         yield state & 0xff
 
 def bench():
 
     # Parameters
-    LFSR_WIDTH = 31
-    LFSR_POLY = 0x10000001
-    LFSR_INIT = 0x7fffffff
+    LFSR_WIDTH = 9
+    LFSR_POLY = 0x021
+    LFSR_INIT = 0x1ff
     LFSR_CONFIG = "FIBONACCI"
     REVERSE = 0
     OUTPUT_WIDTH = 8
@@ -85,11 +85,11 @@ def bench():
     data_out = Signal(intbv(0)[OUTPUT_WIDTH:])
 
     # DUT
-    dut = dut_lfsr_prbs(clk,
-                        rst,
-                        current_test,
-                        enable,
-                        data_out)
+    dut = dut_lfsr_prbs_gen(clk,
+                            rst,
+                            current_test,
+                            enable,
+                            data_out)
 
     @always(delay(4))
     def clkgen():
@@ -109,10 +109,10 @@ def bench():
         # testbench stimulus
 
         yield clk.posedge
-        print("test 1: test PRBS31")
+        print("test 1: test PRBS9")
         current_test.next = 1
 
-        gen = prbs31()
+        gen = prbs9()
 
         enable.next = 1
         yield clk.posedge

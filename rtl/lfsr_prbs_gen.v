@@ -29,7 +29,7 @@ THE SOFTWARE.
 /*
  * LFSR PRBS generator
  */
-module lfsr_prbs #
+module lfsr_prbs_gen #
 (
     // width of LFSR
     parameter LFSR_WIDTH = 31,

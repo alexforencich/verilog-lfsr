@@ -27,7 +27,7 @@ from myhdl import *
 import os
 import struct
 
-module = 'lfsr_prbs'
+module = 'lfsr_prbs_gen'
 testbench = 'test_%s_prbs31_64' % module
 
 srcs = []
@@ -40,11 +40,11 @@ src = ' '.join(srcs)
 
 build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
-def dut_lfsr_prbs(clk,
-                  rst,
-                  current_test,
-                  enable,
-                  data_out):
+def dut_lfsr_prbs_gen(clk,
+                      rst,
+                      current_test,
+                      enable,
+                      data_out):
 
     if os.system(build_cmd):
         raise Exception("Error running build command")
@@ -86,11 +86,11 @@ def bench():
     data_out = Signal(intbv(0)[OUTPUT_WIDTH:])
 
     # DUT
-    dut = dut_lfsr_prbs(clk,
-                        rst,
-                        current_test,
-                        enable,
-                        data_out)
+    dut = dut_lfsr_prbs_gen(clk,
+                            rst,
+                            current_test,
+                            enable,
+                            data_out)
 
     @always(delay(4))
     def clkgen():
