@@ -54,12 +54,16 @@ wire [DATA_WIDTH-1:0] data_out;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                data_in,
-                data_in_valid);
-    $to_myhdl(data_out);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        data_in,
+        data_in_valid
+    );
+    $to_myhdl(
+        data_out
+    );
 
     // dump file
     $dumpfile("test_lfsr_prbs_check_prbs31.lxt");

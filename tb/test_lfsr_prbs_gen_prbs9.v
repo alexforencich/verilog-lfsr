@@ -53,11 +53,15 @@ wire [OUTPUT_WIDTH-1:0] data_out;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                enable);
-    $to_myhdl(data_out);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        enable
+    );
+    $to_myhdl(
+        data_out
+    );
 
     // dump file
     $dumpfile("test_lfsr_prbs_gen_prbs9.lxt");

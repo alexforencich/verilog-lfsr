@@ -28,7 +28,7 @@ import os
 import struct
 
 module = 'lfsr_scramble'
-testbench = 'test_lfsr_scramble'
+testbench = 'test_%s' % module
 
 srcs = []
 
@@ -39,23 +39,6 @@ srcs.append("%s.v" % testbench)
 src = ' '.join(srcs)
 
 build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
-
-def dut_lfsr_scramble(clk,
-                      rst,
-                      current_test,
-                      data_in,
-                      data_in_valid,
-                      data_out):
-
-    if os.system(build_cmd):
-        raise Exception("Error running build command")
-    return Cosimulation("vvp -m myhdl %s.vvp -lxt2" % testbench,
-                clk=clk,
-                rst=rst,
-                current_test=current_test,
-                data_in=data_in,
-                data_in_valid=data_in_valid,
-                data_out=data_out)
 
 def scramble_64b66b(data, state=0x3ffffffffffffff):
     data_out = bytearray()
@@ -98,12 +81,18 @@ def bench():
     data_out = Signal(intbv(0)[DATA_WIDTH:])
 
     # DUT
-    dut = dut_lfsr_scramble(clk,
-                            rst,
-                            current_test,
-                            data_in,
-                            data_in_valid,
-                            data_out)
+    if os.system(build_cmd):
+        raise Exception("Error running build command")
+
+    dut = Cosimulation(
+        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        clk=clk,
+        rst=rst,
+        current_test=current_test,
+        data_in=data_in,
+        data_in_valid=data_in_valid,
+        data_out=data_out
+    )
 
     @always(delay(4))
     def clkgen():

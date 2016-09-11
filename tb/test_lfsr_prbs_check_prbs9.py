@@ -39,23 +39,6 @@ src = ' '.join(srcs)
 
 build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
-def dut_lfsr_prbs_check(clk,
-                        rst,
-                        current_test,
-                        data_in,
-                        data_in_valid,
-                        data_out):
-
-    if os.system(build_cmd):
-        raise Exception("Error running build command")
-    return Cosimulation("vvp -m myhdl %s.vvp -lxt2" % testbench,
-                clk=clk,
-                rst=rst,
-                current_test=current_test,
-                data_in=data_in,
-                data_in_valid=data_in_valid,
-                data_out=data_out)
-
 def prbs9(state = 0x1ff):
     while True:
         for i in range(8):
@@ -89,12 +72,18 @@ def bench():
     data_out = Signal(intbv(0)[DATA_WIDTH:])
 
     # DUT
-    dut = dut_lfsr_prbs_check(clk,
-                              rst,
-                              current_test,
-                              data_in,
-                              data_in_valid,
-                              data_out)
+    if os.system(build_cmd):
+        raise Exception("Error running build command")
+
+    dut = Cosimulation(
+        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        clk=clk,
+        rst=rst,
+        current_test=current_test,
+        data_in=data_in,
+        data_in_valid=data_in_valid,
+        data_out=data_out
+    )
 
     @always(delay(4))
     def clkgen():

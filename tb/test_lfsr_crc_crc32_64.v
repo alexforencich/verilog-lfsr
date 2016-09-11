@@ -55,12 +55,16 @@ wire [OUTPUT_WIDTH-1:0] crc_out;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                data_in,
-                data_in_valid);
-    $to_myhdl(crc_out);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        data_in,
+        data_in_valid
+    );
+    $to_myhdl(
+        crc_out
+    );
 
     // dump file
     $dumpfile("test_lfsr_crc_crc32_64.lxt");
