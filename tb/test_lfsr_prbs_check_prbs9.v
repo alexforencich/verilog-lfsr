@@ -35,7 +35,7 @@ module test_lfsr_prbs_check_prbs9;
 parameter LFSR_WIDTH = 9;
 parameter LFSR_POLY = 9'h021;
 parameter LFSR_INIT = {LFSR_WIDTH{1'b1}};
-parameter LFSR_CONFIG = "FIBONACCI";
+parameter LFSR_CONFIG = "FIBONACCI_FF";
 parameter REVERSE = 0;
 parameter INVERT = 0;
 parameter DATA_WIDTH = 8;

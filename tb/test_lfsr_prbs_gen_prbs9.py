@@ -57,7 +57,7 @@ def bench():
     LFSR_CONFIG = "FIBONACCI"
     REVERSE = 0
     INVERT = 0
-    OUTPUT_WIDTH = 8
+    DATA_WIDTH = 8
     STYLE = "AUTO"
 
     # Inputs
@@ -68,7 +68,7 @@ def bench():
     enable = Signal(bool(0))
 
     # Outputs
-    data_out = Signal(intbv(0)[OUTPUT_WIDTH:])
+    data_out = Signal(intbv(0)[DATA_WIDTH:])
 
     # DUT
     if os.system(build_cmd):

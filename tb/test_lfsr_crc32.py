@@ -47,7 +47,6 @@ def bench():
     LFSR_CONFIG = "GALOIS"
     REVERSE = 1
     DATA_WIDTH = 8
-    OUTPUT_WIDTH = LFSR_WIDTH
     STYLE = "AUTO"
 
     # Inputs
@@ -56,10 +55,11 @@ def bench():
     current_test = Signal(intbv(0)[8:])
 
     data_in = Signal(intbv(0)[DATA_WIDTH:])
-    lfsr_in = Signal(intbv(0)[LFSR_WIDTH:])
+    state_in = Signal(intbv(0)[LFSR_WIDTH:])
 
     # Outputs
-    lfsr_out = Signal(intbv(0)[OUTPUT_WIDTH:])
+    data_out = Signal(intbv(0)[DATA_WIDTH:])
+    state_out = Signal(intbv(0)[LFSR_WIDTH:])
 
     # DUT
     if os.system(build_cmd):
@@ -71,8 +71,9 @@ def bench():
         rst=rst,
         current_test=current_test,
         data_in=data_in,
-        lfsr_in=lfsr_in,
-        lfsr_out=lfsr_out
+        state_in=state_in,
+        data_out=data_out,
+        state_out=state_out
     )
 
     @always(delay(4))
@@ -96,14 +97,14 @@ def bench():
         print("test 1: single word")
         current_test.next = 1
 
-        lfsr_in.next = 0xffffffff
+        state_in.next = 0xffffffff
         data_in.next = 0x12
         yield clk.posedge
 
-        print(hex(~lfsr_out.val))
+        print(hex(~state_out.val))
         print(hex(zlib.crc32(b'\x12') & 0xffffffff))
 
-        assert ~lfsr_out.val == zlib.crc32(b'\x12') & 0xffffffff
+        assert ~state_out.val == zlib.crc32(b'\x12') & 0xffffffff
 
         yield delay(100)
 
@@ -113,16 +114,16 @@ def bench():
 
         block = b'\x11\x22\x33\x44'
 
-        lfsr_in.next = 0xffffffff
+        state_in.next = 0xffffffff
         for b in block:
             data_in.next = b
             yield clk.posedge
-            lfsr_in.next = lfsr_out.val
+            state_in.next = state_out.val
 
-        print(hex(~lfsr_out.val))
+        print(hex(~state_out.val))
         print(hex(zlib.crc32(block) & 0xffffffff))
 
-        assert ~lfsr_out.val == zlib.crc32(block) & 0xffffffff
+        assert ~state_out.val == zlib.crc32(block) & 0xffffffff
 
         yield delay(100)
 

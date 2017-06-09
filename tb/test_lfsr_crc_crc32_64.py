@@ -74,7 +74,7 @@ def bench():
     if os.system(build_cmd):
         raise Exception("Error running build command")
 
-    return Cosimulation(
+    dut = Cosimulation(
         "vvp -m myhdl %s.vvp -lxt2" % testbench,
         clk=clk,
         rst=rst,

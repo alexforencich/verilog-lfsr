@@ -50,7 +50,6 @@ def bench():
     REVERSE = 1
     INVERT = 1
     DATA_WIDTH = 8
-    OUTPUT_WIDTH = LFSR_WIDTH
     STYLE = "AUTO"
 
     # Inputs
@@ -62,13 +61,13 @@ def bench():
     data_in_valid = Signal(bool(0))
 
     # Outputs
-    crc_out = Signal(intbv(0)[OUTPUT_WIDTH:])
+    crc_out = Signal(intbv(0)[LFSR_WIDTH:])
 
     # DUT
     if os.system(build_cmd):
         raise Exception("Error running build command")
 
-    return Cosimulation(
+    dut = Cosimulation(
         "vvp -m myhdl %s.vvp -lxt2" % testbench,
         clk=clk,
         rst=rst,
@@ -84,6 +83,7 @@ def bench():
 
     @instance
     def check():
+        print("mark")
         yield delay(100)
         yield clk.posedge
         rst.next = 1

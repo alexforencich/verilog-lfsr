@@ -37,25 +37,23 @@ module lfsr_crc #
     parameter LFSR_POLY = 32'h04c11db7,
     // Initial state
     parameter LFSR_INIT = {LFSR_WIDTH{1'b1}},
-    // LFSR configuration: "GALOIS", "FIBONACCI"
+    // LFSR configuration: "GALOIS", "FIBONACCI", "FIBONACCI_FF"
     parameter LFSR_CONFIG = "GALOIS",
     // bit-reverse input and output
     parameter REVERSE = 1,
     // invert output
     parameter INVERT = 1,
-    // width of data input
+    // width of data input and output
     parameter DATA_WIDTH = 8,
-    // width of CRC output
-    parameter OUTPUT_WIDTH = LFSR_WIDTH,
     // implementation style: "AUTO", "LOOP", "REDUCTION"
     parameter STYLE = "AUTO"
 )
 (
-    input  wire                    clk,
-    input  wire                    rst,
-    input  wire [DATA_WIDTH-1:0]   data_in,
-    input  wire                    data_in_valid,
-    output wire [OUTPUT_WIDTH-1:0] crc_out
+    input  wire                  clk,
+    input  wire                  rst,
+    input  wire [DATA_WIDTH-1:0] data_in,
+    input  wire                  data_in_valid,
+    output wire [LFSR_WIDTH-1:0] crc_out
 );
 
 /*
@@ -117,11 +115,29 @@ generators and checkers.
 
 Fibonacci style (example for 64b66b scrambler, 0x8000000001)
 
-    ,-----------------------------(+)<------------------------------,
-    |                              ^                                |
-    |  .----.  .----.       .----. |  .----.       .----.  .----.   |
-    `->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |->(+)<-DIN (LSB first)
-       '----'  '----'       '----'    '----'       '----'  '----'
+   DIN (LSB first)
+    |
+    V
+   (+)<---------------------------(+)<-----------------------------.
+    |                              ^                               |
+    |  .----.  .----.       .----. |  .----.       .----.  .----.  |
+    +->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |--'
+    |  '----'  '----'       '----'    '----'       '----'  '----'
+    V
+   DOUT
+
+Fibonacci feed-forward style (example for 64b66b descrambler, 0x8000000001)
+
+   DIN (LSB first)
+    |
+    |  .----.  .----.       .----.    .----.       .----.  .----.
+    +->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |---.
+    |  '----'  '----'       '----' |  '----'       '----'  '----'   |
+    |                              V                                |
+   (+)<---------------------------(+)-------------------------------'
+    |
+    V
+   DOUT
 
 Galois style (example for CRC16, 0x8005)
 
@@ -183,13 +199,10 @@ PRBS31      Fibonacci, inverted     31      31'h10000001    any
 
 */
 
-// STATE_WIDTH is OUTPUT_WIDTH or LFSR_WIDTH, whichever is larger
-parameter STATE_WIDTH = OUTPUT_WIDTH > LFSR_WIDTH ? OUTPUT_WIDTH : LFSR_WIDTH;
-
 reg [LFSR_WIDTH-1:0] state_reg = LFSR_INIT;
-reg [OUTPUT_WIDTH-1:0] output_reg = 0;
+reg [LFSR_WIDTH-1:0] output_reg = 0;
 
-wire [STATE_WIDTH-1:0] lfsr_out;
+wire [LFSR_WIDTH-1:0] lfsr_state;
 
 assign crc_out = output_reg;
 
@@ -199,13 +212,13 @@ lfsr #(
     .LFSR_CONFIG(LFSR_CONFIG),
     .REVERSE(REVERSE),
     .DATA_WIDTH(DATA_WIDTH),
-    .OUTPUT_WIDTH(STATE_WIDTH),
     .STYLE(STYLE)
 )
 lfsr_inst (
     .data_in(data_in),
-    .lfsr_in(state_reg),
-    .lfsr_out(lfsr_out)
+    .state_in(state_reg),
+    .data_out(),
+    .state_out(lfsr_state)
 );
 
 always @(posedge clk) begin
@@ -214,20 +227,11 @@ always @(posedge clk) begin
         output_reg <= 0;
     end else begin
         if (data_in_valid) begin
-            if (REVERSE) begin
-                state_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-LFSR_WIDTH];
-                if (INVERT) begin
-                    output_reg <= ~lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
-                end else begin
-                    output_reg <= lfsr_out[STATE_WIDTH-1:STATE_WIDTH-OUTPUT_WIDTH];
-                end
+            state_reg <= lfsr_state;
+            if (INVERT) begin
+                output_reg <= ~lfsr_state;
             end else begin
-                state_reg <= lfsr_out[LFSR_WIDTH-1:0];
-                if (INVERT) begin
-                    output_reg <= ~lfsr_out[OUTPUT_WIDTH-1:0];
-                end else begin
-                    output_reg <= lfsr_out[OUTPUT_WIDTH-1:0];
-                end
+                output_reg <= lfsr_state;
             end
         end
     end

@@ -37,7 +37,6 @@ parameter LFSR_POLY = 32'h4c11db7;
 parameter LFSR_CONFIG = "GALOIS";
 parameter REVERSE = 1;
 parameter DATA_WIDTH = 8;
-parameter OUTPUT_WIDTH = LFSR_WIDTH;
 parameter STYLE = "AUTO";
 
 // Inputs
@@ -46,10 +45,11 @@ reg rst = 0;
 reg [7:0] current_test = 0;
 
 reg [DATA_WIDTH-1:0] data_in = 0;
-reg [LFSR_WIDTH-1:0] lfsr_in = 0;
+reg [LFSR_WIDTH-1:0] state_in = 0;
 
 // Outputs
-wire [OUTPUT_WIDTH-1:0] lfsr_out;
+wire [DATA_WIDTH-1:0] data_out = 0;
+wire [LFSR_WIDTH-1:0] state_out;
 
 initial begin
     // myhdl integration
@@ -58,10 +58,11 @@ initial begin
         rst,
         current_test,
         data_in,
-        lfsr_in
+        state_in
     );
     $to_myhdl(
-        lfsr_out
+        data_out,
+        state_out
     );
 
     // dump file
@@ -75,13 +76,13 @@ lfsr #(
     .LFSR_CONFIG(LFSR_CONFIG),
     .REVERSE(REVERSE),
     .DATA_WIDTH(DATA_WIDTH),
-    .OUTPUT_WIDTH(OUTPUT_WIDTH),
     .STYLE(STYLE)
 )
 UUT (
     .data_in(data_in),
-    .lfsr_in(lfsr_in),
-    .lfsr_out(lfsr_out)
+    .state_in(state_in),
+    .data_out(data_out),
+    .state_out(state_out)
 );
 
 endmodule

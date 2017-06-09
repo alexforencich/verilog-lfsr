@@ -39,7 +39,6 @@ parameter LFSR_CONFIG = "GALOIS";
 parameter REVERSE = 1;
 parameter INVERT = 1;
 parameter DATA_WIDTH = 64;
-parameter OUTPUT_WIDTH = LFSR_WIDTH;
 parameter STYLE = "AUTO";
 
 // Inputs
@@ -51,7 +50,7 @@ reg [DATA_WIDTH-1:0] data_in = 0;
 reg data_in_valid = 0;
 
 // Outputs
-wire [OUTPUT_WIDTH-1:0] crc_out;
+wire [LFSR_WIDTH-1:0] crc_out;
 
 initial begin
     // myhdl integration
@@ -79,7 +78,6 @@ lfsr_crc #(
     .REVERSE(REVERSE),
     .INVERT(INVERT),
     .DATA_WIDTH(DATA_WIDTH),
-    .OUTPUT_WIDTH(OUTPUT_WIDTH),
     .STYLE(STYLE)
 )
 UUT (

@@ -38,7 +38,7 @@ parameter LFSR_INIT = {LFSR_WIDTH{1'b1}};
 parameter LFSR_CONFIG = "FIBONACCI";
 parameter REVERSE = 0;
 parameter INVERT = 1;
-parameter OUTPUT_WIDTH = 64;
+parameter DATA_WIDTH = 64;
 parameter STYLE = "AUTO";
 
 // Inputs
@@ -49,7 +49,7 @@ reg [7:0] current_test = 0;
 reg enable = 0;
 
 // Outputs
-wire [OUTPUT_WIDTH-1:0] data_out;
+wire [DATA_WIDTH-1:0] data_out;
 
 initial begin
     // myhdl integration
@@ -75,7 +75,7 @@ lfsr_prbs_gen #(
     .LFSR_CONFIG(LFSR_CONFIG),
     .REVERSE(REVERSE),
     .INVERT(INVERT),
-    .OUTPUT_WIDTH(OUTPUT_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH),
     .STYLE(STYLE)
 )
 UUT (

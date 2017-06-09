@@ -54,7 +54,7 @@ def bench():
     LFSR_WIDTH = 9
     LFSR_POLY = 0x021
     LFSR_INIT = 0x1ff
-    LFSR_CONFIG = "FIBONACCI"
+    LFSR_CONFIG = "FIBONACCI_FF"
     REVERSE = 0
     INVERT = 0
     DATA_WIDTH = 8

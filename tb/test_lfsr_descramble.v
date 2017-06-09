@@ -35,7 +35,7 @@ module test_lfsr_descramble;
 parameter LFSR_WIDTH = 58;
 parameter LFSR_POLY = 58'h8000000001;
 parameter LFSR_INIT = {LFSR_WIDTH{1'b1}};
-parameter LFSR_CONFIG = "FIBONACCI";
+parameter LFSR_CONFIG = "FIBONACCI_FF";
 parameter REVERSE = 1;
 parameter DATA_WIDTH = 8;
 parameter STYLE = "AUTO";

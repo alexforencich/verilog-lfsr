@@ -55,7 +55,6 @@ def bench():
     LFSR_CONFIG = "FIBONACCI"
     REVERSE = 0
     DATA_WIDTH = 8
-    OUTPUT_WIDTH = max(DATA_WIDTH, LFSR_WIDTH)
     STYLE = "AUTO"
 
     # Inputs
@@ -64,10 +63,11 @@ def bench():
     current_test = Signal(intbv(0)[8:])
 
     data_in = Signal(intbv(0)[DATA_WIDTH:])
-    lfsr_in = Signal(intbv(0)[LFSR_WIDTH:])
+    state_in = Signal(intbv(0)[LFSR_WIDTH:])
 
     # Outputs
-    lfsr_out = Signal(intbv(0)[OUTPUT_WIDTH:])
+    data_out = Signal(intbv(0)[DATA_WIDTH:])
+    state_out = Signal(intbv(0)[LFSR_WIDTH:])
 
     # DUT
     if os.system(build_cmd):
@@ -79,8 +79,9 @@ def bench():
         rst=rst,
         current_test=current_test,
         data_in=data_in,
-        lfsr_in=lfsr_in,
-        lfsr_out=lfsr_out
+        state_in=state_in,
+        data_out=data_out,
+        state_out=state_out
     )
 
     @always(delay(4))
@@ -104,7 +105,7 @@ def bench():
         print("test 1: test PRBS9")
         current_test.next = 1
 
-        lfsr_in.next = 0x1ff
+        state_in.next = 0x1ff
         data_in.next = 0
         gen = prbs9()
 
@@ -113,13 +114,13 @@ def bench():
             yield clk.posedge
 
             ref = next(gen)
-            val = lfsr_out[DATA_WIDTH:]
+            val = data_out.val
 
             print((ref, val))
 
             assert ref == val
 
-            lfsr_in.next = lfsr_out.val[OUTPUT_WIDTH:OUTPUT_WIDTH-LFSR_WIDTH]
+            state_in.next = state_out.val
 
         yield delay(100)
 
