@@ -35,6 +35,7 @@ module test_lfsr_crc32;
 parameter LFSR_WIDTH = 32;
 parameter LFSR_POLY = 32'h4c11db7;
 parameter LFSR_CONFIG = "GALOIS";
+parameter LFSR_FEED_FORWARD = 0;
 parameter REVERSE = 1;
 parameter DATA_WIDTH = 8;
 parameter STYLE = "AUTO";
@@ -74,6 +75,7 @@ lfsr #(
     .LFSR_WIDTH(LFSR_WIDTH),
     .LFSR_POLY(LFSR_POLY),
     .LFSR_CONFIG(LFSR_CONFIG),
+    .LFSR_FEED_FORWARD(LFSR_FEED_FORWARD),
     .REVERSE(REVERSE),
     .DATA_WIDTH(DATA_WIDTH),
     .STYLE(STYLE)

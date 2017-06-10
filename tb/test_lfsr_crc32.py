@@ -45,6 +45,7 @@ def bench():
     LFSR_WIDTH = 32
     LFSR_POLY = 0x4c11db7
     LFSR_CONFIG = "GALOIS"
+    LFSR_FEED_FORWARD = 0
     REVERSE = 1
     DATA_WIDTH = 8
     STYLE = "AUTO"

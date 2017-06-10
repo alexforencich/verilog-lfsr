@@ -35,8 +35,10 @@ module lfsr #
     parameter LFSR_WIDTH = 31,
     // LFSR polynomial
     parameter LFSR_POLY = 31'h10000001,
-    // LFSR configuration: "GALOIS", "FIBONACCI", "FIBONACCI_FF"
+    // LFSR configuration: "GALOIS", "FIBONACCI"
     parameter LFSR_CONFIG = "FIBONACCI",
+    // LFSR feed forward enable
+    parameter LFSR_FEED_FORWARD = 0,
     // bit-reverse input and output
     parameter REVERSE = 0,
     // width of data input
@@ -117,26 +119,39 @@ Fibonacci style (example for 64b66b scrambler, 0x8000000001)
     V
    DOUT
 
+Galois style (example for CRC16, 0x8005)
+
+    ,-------------------+-------------------------+----------(+)<-- DIN (MSB first)
+    |                   |                         |           ^
+    |  .----.  .----.   V   .----.       .----.   V   .----.  |
+    `->|  0 |->|  1 |->(+)->|  2 |->...->| 14 |->(+)->| 15 |--+---> DOUT
+       '----'  '----'       '----'       '----'       '----'
+
+LFSR_FEED_FORWARD
+
+Generate feed forward instead of feed back LFSR.  Enable this for PRBS checking and self-
+synchronous descrambling.
+
 Fibonacci feed-forward style (example for 64b66b descrambler, 0x8000000001)
 
    DIN (LSB first)
     |
     |  .----.  .----.       .----.    .----.       .----.  .----.
-    +->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |---.
-    |  '----'  '----'       '----' |  '----'       '----'  '----'   |
-    |                              V                                |
-   (+)<---------------------------(+)-------------------------------'
+    +->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |--.
+    |  '----'  '----'       '----' |  '----'       '----'  '----'  |
+    |                              V                               |
+   (+)<---------------------------(+)------------------------------'
     |
     V
    DOUT
 
-Galois style (example for CRC16, 0x8005)
+Galois feed-forward style
 
-    ,-------------------+---------------------------------+------------,
-    |                   |                                 |            |
-    |  .----.  .----.   V   .----.  .----.       .----.   V   .----.   |
-    `->|  0 |->|  1 |->(+)->|  2 |->|  3 |->...->| 14 |->(+)->| 15 |->(+)<-DIN (MSB first)
-       '----'  '----'       '----'  '----'       '----'       '----'
+    ,-------------------+-------------------------+------------+--- DIN (MSB first)
+    |                   |                         |            |
+    |  .----.  .----.   V   .----.       .----.   V   .----.   V
+    `->|  0 |->|  1 |->(+)->|  2 |->...->| 14 |->(+)->| 15 |->(+)-> DOUT
+       '----'  '----'       '----'       '----'       '----'
 
 REVERSE
 
@@ -207,7 +222,7 @@ initial begin
     end
 
     // simulate shift register
-    if (LFSR_CONFIG == "FIBONACCI" || LFSR_CONFIG == "FIBONACCI_FF") begin
+    if (LFSR_CONFIG == "FIBONACCI") begin
         // Fibonacci configuration
         for (i = DATA_WIDTH-1; i >= 0; i = i - 1) begin
             // determine shift in value
@@ -233,17 +248,15 @@ initial begin
                 output_mask_state[j] = output_mask_state[j-1];
                 output_mask_data[j] = output_mask_data[j-1];
             end
-            if (LFSR_CONFIG == "FIBONACCI_FF") begin
-                // no feedback
-                lfsr_mask_state[0] = {LFSR_WIDTH{1'b0}};
-                lfsr_mask_data[0] = 1 << i;
-            end else begin
-                // feedback
-                lfsr_mask_state[0] = state_val;
-                lfsr_mask_data[0] = data_val;
-            end
             output_mask_state[0] = state_val;
             output_mask_data[0] = data_val;
+            if (LFSR_FEED_FORWARD) begin
+                // only shift in new input data
+                state_val = {LFSR_WIDTH{1'b0}};
+                data_val = 1 << i;
+            end
+            lfsr_mask_state[0] = state_val;
+            lfsr_mask_data[0] = data_val;
         end
     end else if (LFSR_CONFIG == "GALOIS") begin
         // Galois configuration
@@ -263,10 +276,15 @@ initial begin
                 output_mask_state[j] = output_mask_state[j-1];
                 output_mask_data[j] = output_mask_data[j-1];
             end
-            lfsr_mask_state[0] = state_val;
-            lfsr_mask_data[0] = data_val;
             output_mask_state[0] = state_val;
             output_mask_data[0] = data_val;
+            if (LFSR_FEED_FORWARD) begin
+                // only shift in new input data
+                state_val = {LFSR_WIDTH{1'b0}};
+                data_val = 1 << i;
+            end
+            lfsr_mask_state[0] = state_val;
+            lfsr_mask_data[0] = data_val;
 
             // add XOR inputs at correct indicies
             for (j = 1; j < LFSR_WIDTH; j = j + 1) begin

@@ -37,7 +37,7 @@ module lfsr_crc #
     parameter LFSR_POLY = 32'h04c11db7,
     // Initial state
     parameter LFSR_INIT = {LFSR_WIDTH{1'b1}},
-    // LFSR configuration: "GALOIS", "FIBONACCI", "FIBONACCI_FF"
+    // LFSR configuration: "GALOIS", "FIBONACCI"
     parameter LFSR_CONFIG = "GALOIS",
     // bit-reverse input and output
     parameter REVERSE = 1,
@@ -126,26 +126,13 @@ Fibonacci style (example for 64b66b scrambler, 0x8000000001)
     V
    DOUT
 
-Fibonacci feed-forward style (example for 64b66b descrambler, 0x8000000001)
-
-   DIN (LSB first)
-    |
-    |  .----.  .----.       .----.    .----.       .----.  .----.
-    +->|  0 |->|  1 |->...->| 38 |-+->| 39 |->...->| 56 |->| 57 |---.
-    |  '----'  '----'       '----' |  '----'       '----'  '----'   |
-    |                              V                                |
-   (+)<---------------------------(+)-------------------------------'
-    |
-    V
-   DOUT
-
 Galois style (example for CRC16, 0x8005)
 
-    ,-------------------+---------------------------------+------------,
-    |                   |                                 |            |
-    |  .----.  .----.   V   .----.  .----.       .----.   V   .----.   |
-    `->|  0 |->|  1 |->(+)->|  2 |->|  3 |->...->| 14 |->(+)->| 15 |->(+)<-DIN (MSB first)
-       '----'  '----'       '----'  '----'       '----'       '----'
+    ,-------------------+-------------------------+----------(+)<-- DIN (MSB first)
+    |                   |                         |           ^
+    |  .----.  .----.   V   .----.       .----.   V   .----.  |
+    `->|  0 |->|  1 |->(+)->|  2 |->...->| 14 |->(+)->| 15 |--+---> DOUT
+       '----'  '----'       '----'       '----'       '----'
 
 REVERSE
 
@@ -160,11 +147,6 @@ DATA_WIDTH
 Specify width of input data bus.  The module will perform one shift per input data bit,
 so if the input data bus is not required tie data_in to zero and set DATA_WIDTH to the
 required number of shifts per clock cycle.  
-
-OUTPUT_WIDTH
-
-Specify width of output data bus.  Defaults to LFSR_WIDTH.  Mainly useful for extending
-the output width for LFSRs.  
 
 STYLE
 
@@ -210,6 +192,7 @@ lfsr #(
     .LFSR_WIDTH(LFSR_WIDTH),
     .LFSR_POLY(LFSR_POLY),
     .LFSR_CONFIG(LFSR_CONFIG),
+    .LFSR_FEED_FORWARD(0),
     .REVERSE(REVERSE),
     .DATA_WIDTH(DATA_WIDTH),
     .STYLE(STYLE)

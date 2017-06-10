@@ -35,6 +35,7 @@ module test_lfsr_prbs9;
 parameter LFSR_WIDTH = 9;
 parameter LFSR_POLY = 9'h021;
 parameter LFSR_CONFIG = "FIBONACCI";
+parameter LFSR_FEED_FORWARD = 0;
 parameter REVERSE = 0;
 parameter DATA_WIDTH = 8;
 parameter STYLE = "AUTO";
@@ -74,6 +75,7 @@ lfsr #(
     .LFSR_WIDTH(LFSR_WIDTH),
     .LFSR_POLY(LFSR_POLY),
     .LFSR_CONFIG(LFSR_CONFIG),
+    .LFSR_FEED_FORWARD(LFSR_FEED_FORWARD),
     .REVERSE(REVERSE),
     .DATA_WIDTH(DATA_WIDTH),
     .STYLE(STYLE)
