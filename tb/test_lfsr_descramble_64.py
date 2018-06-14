@@ -156,7 +156,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, clkgen, check
+    return instances()
 
 def test_bench():
     sim = Simulation(bench())
