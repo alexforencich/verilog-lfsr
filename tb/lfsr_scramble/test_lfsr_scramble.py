@@ -129,11 +129,12 @@ tests_dir = os.path.abspath(os.path.dirname(__file__))
 rtl_dir = os.path.abspath(os.path.join(tests_dir, '..', '..', 'rtl'))
 
 
+@pytest.mark.parametrize("style", ["AUTO", "LOOP"])
 @pytest.mark.parametrize(("lfsr_width", "lfsr_poly", "lfsr_init", "lfsr_config", "reverse", "data_width"), [
-            (58,  "58'h8000000001", "58'h3ffffffffffffff", "\"FIBONACCI\"", 1, 8),
-            (58,  "58'h8000000001", "58'h3ffffffffffffff", "\"FIBONACCI\"", 1, 64),
+            (58,  "58'h8000000001", "58'h3ffffffffffffff", "FIBONACCI", 1, 8),
+            (58,  "58'h8000000001", "58'h3ffffffffffffff", "FIBONACCI", 1, 64),
         ])
-def test_lfsr_scramble(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, reverse, data_width):
+def test_lfsr_scramble(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, reverse, data_width, style):
     dut = "lfsr_scramble"
     module = os.path.splitext(os.path.basename(__file__))[0]
     toplevel = dut
@@ -148,10 +149,10 @@ def test_lfsr_scramble(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, r
     parameters['LFSR_WIDTH'] = lfsr_width
     parameters['LFSR_POLY'] = lfsr_poly
     parameters['LFSR_INIT'] = lfsr_init
-    parameters['LFSR_CONFIG'] = lfsr_config
+    parameters['LFSR_CONFIG'] = f'"{lfsr_config}"'
     parameters['REVERSE'] = reverse
     parameters['DATA_WIDTH'] = data_width
-    parameters['STYLE'] = "\"AUTO\""
+    parameters['STYLE'] = f'"{style}"'
 
     extra_env = {f'PARAM_{k}': str(v) for k, v in parameters.items()}
 

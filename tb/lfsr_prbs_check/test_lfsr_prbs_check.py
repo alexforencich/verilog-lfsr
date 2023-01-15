@@ -179,13 +179,14 @@ tests_dir = os.path.abspath(os.path.dirname(__file__))
 rtl_dir = os.path.abspath(os.path.join(tests_dir, '..', '..', 'rtl'))
 
 
+@pytest.mark.parametrize("style", ["AUTO", "LOOP"])
 @pytest.mark.parametrize(("lfsr_width", "lfsr_poly", "lfsr_init", "lfsr_config", "reverse", "invert", "data_width"), [
-            (9,  "9'h021", "9'h1ff", "\"FIBONACCI\"", 0, 1, 8),
-            (9,  "9'h021", "9'h1ff", "\"FIBONACCI\"", 0, 1, 64),
-            (31, "31'h10000001", "31'h7fffffff", "\"FIBONACCI\"", 0, 1, 8),
-            (31, "31'h10000001", "31'h7fffffff", "\"FIBONACCI\"", 0, 1, 64),
+            (9,  "9'h021", "9'h1ff", "FIBONACCI", 0, 1, 8),
+            (9,  "9'h021", "9'h1ff", "FIBONACCI", 0, 1, 64),
+            (31, "31'h10000001", "31'h7fffffff", "FIBONACCI", 0, 1, 8),
+            (31, "31'h10000001", "31'h7fffffff", "FIBONACCI", 0, 1, 64),
         ])
-def test_lfsr_prbs_check(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, reverse, invert, data_width):
+def test_lfsr_prbs_check(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, reverse, invert, data_width, style):
     dut = "lfsr_prbs_check"
     module = os.path.splitext(os.path.basename(__file__))[0]
     toplevel = dut
@@ -200,11 +201,11 @@ def test_lfsr_prbs_check(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config,
     parameters['LFSR_WIDTH'] = lfsr_width
     parameters['LFSR_POLY'] = lfsr_poly
     parameters['LFSR_INIT'] = lfsr_init
-    parameters['LFSR_CONFIG'] = lfsr_config
+    parameters['LFSR_CONFIG'] = f'"{lfsr_config}"'
     parameters['REVERSE'] = reverse
     parameters['INVERT'] = invert
     parameters['DATA_WIDTH'] = data_width
-    parameters['STYLE'] = "\"AUTO\""
+    parameters['STYLE'] = f'"{style}"'
 
     extra_env = {f'PARAM_{k}': str(v) for k, v in parameters.items()}
 
