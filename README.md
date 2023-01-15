@@ -1,20 +1,20 @@
 # Verilog LFSR Readme
 
+[![Build Status](https://github.com/alexforencich/verilog-lfsr/workflows/Regression%20Tests/badge.svg?branch=master)](https://github.com/alexforencich/verilog-lfsr/actions/)
+
 For more information and updates: http://alexforencich.com/wiki/en/verilog/lfsr/start
 
 GitHub repository: https://github.com/alexforencich/verilog-lfsr
 
 ## Introduction
 
-Fully parametrizable combinatorial parallel LFSR/CRC module.  Implements an
-unrolled LFSR next state computation.  Includes full MyHDL testbench.
+Fully parametrizable combinatorial parallel LFSR/CRC module.  Implements an unrolled LFSR next state computation.  Includes full cocotb testbenches.
 
 ## Documentation
 
 ### lfsr module
 
-Fully parametrizable combinatorial parallel LFSR/CRC module.  Implements an
-unrolled LFSR next state computation.
+Fully parametrizable combinatorial parallel LFSR/CRC module.  Implements an unrolled LFSR next state computation.
 
 ### lfsr_crc module
 
@@ -47,7 +47,4 @@ Wrapper for lfsr module for self-synchronizing scrambler.
 
 ## Testing
 
-Running the included testbenches requires MyHDL and Icarus Verilog.  Make sure
-that myhdl.vpi is installed properly for cosimulation to work correctly.  The
-testbenches can be run with a Python test runner like nose or py.test, or the
-individual test scripts can be run with python directly.
+Running the included testbenches requires [cocotb](https://github.com/cocotb/cocotb) and [Icarus Verilog](http://iverilog.icarus.com/).  The testbenches can be run with pytest directly (requires [cocotb-test](https://github.com/themperek/cocotb-test)), pytest via tox, or via cocotb makefiles.
