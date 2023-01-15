@@ -184,6 +184,7 @@ Name        Configuration           Length  Polynomial      Initial value   Note
 CRC16-IBM   Galois, bit-reverse     16      16'h8005        16'hffff
 CRC16-CCITT Galois                  16      16'h1021        16'h1d0f
 CRC32       Galois, bit-reverse     32      32'h04c11db7    32'hffffffff    Ethernet FCS; invert final output
+CRC32C      Galois, bit-reverse     32      32'h1edc6f41    32'hffffffff    iSCSI, Intel CRC32 instruction; invert final output
 PRBS6       Fibonacci               6       6'h21           any
 PRBS7       Fibonacci               7       7'h41           any
 PRBS9       Fibonacci               9       9'h021          any             ITU V.52

@@ -69,6 +69,17 @@ def crc32(data):
     return zlib.crc32(data) & 0xffffffff
 
 
+def crc32c(data, crc=0xffffffff, poly=0x82f63b78):
+    for d in data:
+        crc = crc ^ d
+        for bit in range(0, 8):
+            if crc & 1:
+                crc = (crc >> 1) ^ poly
+            else:
+                crc = crc >> 1
+    return ~crc & 0xffffffff
+
+
 async def run_test_crc(dut, ref_crc):
 
     data_width = len(dut.data_in)
@@ -122,6 +133,11 @@ if cocotb.SIM_NAME:
         factory.add_option("ref_crc", [crc32])
         factory.generate_tests()
 
+    if cocotb.top.LFSR_POLY.value == 0x1edc6f41:
+        factory = TestFactory(run_test_crc)
+        factory.add_option("ref_crc", [crc32c])
+        factory.generate_tests()
+
 
 # cocotb-test
 
@@ -132,6 +148,8 @@ rtl_dir = os.path.abspath(os.path.join(tests_dir, '..', '..', 'rtl'))
 @pytest.mark.parametrize(("lfsr_width", "lfsr_poly", "lfsr_init", "lfsr_config", "reverse", "invert", "data_width"), [
             (32, "32'h4c11db7", "32'hffffffff", "\"GALOIS\"", 1, 1, 8),
             (32, "32'h4c11db7", "32'hffffffff", "\"GALOIS\"", 1, 1, 64),
+            (32, "32'h1edc6f41", "32'hffffffff", "\"GALOIS\"", 1, 1, 8),
+            (32, "32'h1edc6f41", "32'hffffffff", "\"GALOIS\"", 1, 1, 64),
         ])
 def test_lfsr_crc(request, lfsr_width, lfsr_poly, lfsr_init, lfsr_config, reverse, invert, data_width):
     dut = "lfsr_crc"
