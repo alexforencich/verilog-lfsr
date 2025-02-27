@@ -6,6 +6,10 @@ For more information and updates: http://alexforencich.com/wiki/en/verilog/lfsr/
 
 GitHub repository: https://github.com/alexforencich/verilog-lfsr
 
+## Deprecation Notice
+
+This repository is superseded by https://github.com/fpganinja/taxi.  All new features and bug fixes will be applied there, and commercial support is also available.  As a result, this repo is deprecated and will not receive any future maintenance or support.
+
 ## Introduction
 
 Fully parametrizable combinatorial parallel LFSR/CRC module.  Implements an unrolled LFSR next state computation.  Includes full cocotb testbenches.
